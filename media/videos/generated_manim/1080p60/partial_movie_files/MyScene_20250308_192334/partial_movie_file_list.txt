@@ -1,0 +1,9 @@
+# This file is used internally by FFMPEG.
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/MyScene_20250308_192334/3977891868_2191349045_223132457.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/MyScene_20250308_192334/2852726489_2834709167_3877336155.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/MyScene_20250308_192334/2852726489_3717724932_3335598186.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/MyScene_20250308_192334/2852726489_2834709167_1119666567.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/MyScene_20250308_192334/2852726489_3041565475_434695251.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/MyScene_20250308_192334/2852726489_2834709167_533911887.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/MyScene_20250308_192334/2852726489_1319794114_2939374828.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/MyScene_20250308_192334/2852726489_2834709167_220934029.mp4'

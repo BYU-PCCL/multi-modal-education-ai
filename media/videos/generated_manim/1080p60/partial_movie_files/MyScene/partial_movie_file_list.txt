@@ -1,0 +1,10 @@
+# This file is used internally by FFMPEG.
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/MyScene/3977891868_3936399066_223132457.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/MyScene/2852726489_1643691023_3536673027.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/MyScene/2852726489_2355648320_3192275350.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/MyScene/2852726489_1360432783_2327896066.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/MyScene/2852726489_182363057_3504410270.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/MyScene/2852726489_2249996106_1869652516.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/MyScene/2852726489_2526556922_2109310046.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/MyScene/2852726489_356586653_1650657328.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/MyScene/2852726489_2834709167_600047627.mp4'
