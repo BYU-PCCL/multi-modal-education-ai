@@ -1,38 +1,64 @@
-from manim import *
+from manim import Scene, Axes, VGroup, MathTex, Tex, Polygon, FadeIn, FadeOut, Create, ORIGIN, UP, DOWN, WHITE, BLUE, GREEN, YELLOW
 
-class MyScene_20250310_153143(Scene):
+class IntegralCurve2_20250314_185658(Scene):
+    # Brief Explanation: We will show a parabola f(x)=x^2 and the area under it from x=0 to x=2,
+    # then illustrate how the integral sums the area by displaying Riemann rectangles.
     def construct(self):
-        # Equations
-        eq1 = MathTex("2","x","+","3","y","=","12")
-        eq2 = MathTex("3","y","=","12","-","2","x")
-        eq3 = MathTex("y","=","4","-",r"\frac{2}{3}","x")
+        # 1) Create and fade in the Cartesian plane (0s to 1s)
+        axes = Axes(
+            x_range=[0, 2.5, 1],
+            y_range=[0, 4.5, 1],
+            x_length=5,
+            y_length=3,
+            tips=True,
+        )
+        self.play(FadeIn(axes), run_time=1)
 
-        # Position them
-        eq1.move_to(ORIGIN)
-        eq2.move_to(ORIGIN)
-        eq3.move_to(ORIGIN)
+        # 2) Draw the parabola f(x)=x^2 from x=0 to x=2 (1s to 3s)
+        curve = axes.plot(lambda x: x**2, x_range=[0, 2], color=BLUE, stroke_width=6)
+        self.play(Create(curve), run_time=2)
 
-        # Text prompts
-        text_sub = Tex("Subtract 2x from both sides").scale(0.7).next_to(eq1, UP)
-        text_div = Tex("Divide by 3").scale(0.7)
+        # 3) Fill the area under the parabola from x=0 to x=2 (3s to 5s)
+        area = axes.get_area(curve, x_range=[0, 2], color=YELLOW, opacity=0.5)
+        self.play(FadeIn(area), run_time=2)
 
-        # Show initial equation
-        self.play(Write(eq1))
-        self.play(Indicate(VGroup(eq1[0], eq1[1])))  # Highlight "2x"
-        self.play(FadeIn(text_sub))
-        self.wait(1)
-        self.play(FadeOut(text_sub))
+        # 4) Display the integral expression at t=5s (remains until t=10s)
+        integral_tex = MathTex(r"\int_{0}^{2} x^2 \, dx", color=WHITE)
+        integral_tex.to_edge(UP, buff=0.5)
+        self.play(FadeIn(integral_tex), run_time=1)
 
-        # Transform to second equation
-        self.play(TransformMatchingTex(eq1, eq2))
+        # 5) Introduce about five green Riemann sum rectangles (6s to 9s)
+        def f(x):
+            return x**2
 
-        # Highlight "3" and show division text
-        text_div.next_to(eq2, UP)
-        self.play(Indicate(eq2[0]))  # Highlight the "3"
-        self.play(FadeIn(text_div))
-        self.wait(1)
-        self.play(FadeOut(text_div))
+        rectangles = VGroup()
+        n_rects = 5
+        width = 2 / n_rects
+        for i in range(n_rects):
+            x0 = i * width
+            x1 = (i + 1) * width
+            mid = (x0 + x1) / 2
+            height = f(mid)
+            p0 = axes.c2p(x0, 0)
+            p1 = axes.c2p(x0, height)
+            p2 = axes.c2p(x1, height)
+            p3 = axes.c2p(x1, 0)
+            rect = Polygon(p0, p1, p2, p3, color=GREEN, fill_opacity=0.5)
+            rectangles.add(rect)
 
-        # Transform to final equation
-        self.play(TransformMatchingTex(eq2, eq3))
-        self.wait(2)
+        for rect in rectangles:
+            self.play(FadeIn(rect), run_time=0.6)
+
+        # 6) Merge these rectangles into the highlighted area (9s to 10s)
+        self.play(FadeOut(rectangles), run_time=1)
+
+        # 7) Fade in explanatory text below the integral (10s to 12s)
+        explanation_text = Tex("The integral represents the area under the curve.", color=WHITE)
+        explanation_text.scale(0.7)
+        explanation_text.next_to(integral_tex, DOWN, buff=0.5)
+        self.play(FadeIn(explanation_text), run_time=2)
+
+        # 8) Fade out all elements together (12s to 13s)
+        self.play(FadeOut(VGroup(axes, curve, area, integral_tex, explanation_text)), run_time=1)
+
+        # A visual of the area under a curve and its integral.

@@ -5,7 +5,7 @@ from datetime import datetime
 import re
 
 # Set your OpenAI API key (make sure it's set in your environment)
-with open("manim/MANIM/key.env") as f:
+with open("key.env") as f:
     openai.api_key = f.read().strip()
 
 def determine_animation_plan(user_prompt):
@@ -21,20 +21,24 @@ def determine_animation_plan(user_prompt):
             {
                 "role": "system",
                 "content": (
-                    "You will be given a normal prompt from a user that they would put into ChatGPT "
-                    "to help them understand a certain topic or problem. Your output will be given to another "
-                    "model that will actually create the Manim code for an animation to help the user. "
-                    "Your job is to determine what brief (15-30 second) animation should be created to best help the user, "
-                    "and then explain that animation in a concise manner (a brief explanation). Try to make your animation description "
-                    "similar to how 3Blue1Brown the youtuber would format his animations. "
-                    "You won't need to explain the whole concept in the video because this same prompt will be given to another vanilla model that will explain the concept using text. So you just need to make a supplemental video that will add to what another model will already explain."
-                    "However, include helpful equations and words that will more fully explain what is happening in the video."
+                    "You will be given a problem or concept to create an animation plan for. "
+                    "Your output will be given to another "
+                    "model that will actually create the Manim code for an animation. "
+                    "Your job is to determine what brief (5-30 second) animation should be created to best help the user understand the concept that they are asking about, "
+                    "and then explain that animation in a concise manner (a brief explanation). "
+                    "Tell the manim-generating model to include certain helpful equations and words that will more fully explain what is happening in the video. "
+                    "Also tell the model to ensure that it doesn't generate animations that will overlap or go off the screen. As you explain the duration of specific parts of the animation such as how long words and equations should stay on the screen, be specific as to how long they should be and ensure that there is no overlap of different parts of the animation. Also specify exactly where each aspect (equation, word, sentence, shape, etc.) should appear on the screen. "
+                    "Also make sure to tell the model to not make animations move too fast, make sure that you specifiy the length of them and that they are slow enough for people to follow and understand what is going on. "
+                    "Be very detailed and specific in how you explain the animation. Specify which colors to use to understand what is happening. For example, if a certain part of the equation is moving around, make it a seperate color. "
+                    "The objective of your described animation is to show something that can't be described easily with just an equation or words. You are to determine a visual animation that will help the learner visualize and comprehend the intuition of what is moving and the impact that it has. For example, with solving basic equations, show the numbers or variables moving around as you manipulate the equations instead of just having different equations appear. Another example is when describing what the determinat is, create an example of a shape on a plane being manipulated by a matrix that demonstrates what the determinat means. "
+                    "Tell the model to always include a very brief description of what the animation is showing. "
                     "Output only plain text without any markdown formatting."
-                    "IMPORTANT: For get_riemann_rectangles, use 'x_range' (a two-element list, e.g., x_range=[0,2]) instead of 'x_min' and 'x_max'. Ensure all parameters strictly follow the Manim Community v0.19.0 documentation."
+                    ""
                 )
             },
             {"role": "user", "content": user_prompt}
         ],
+        reasoning_effort = "high"
     )
     return response['choices'][0]['message']['content'].strip()
 
@@ -46,24 +50,69 @@ def generate_manim_code(animation_plan):
     Ensure that all LaTeX expressions in MathTex commands use valid syntax.
     """
     response = openai.ChatCompletion.create(
-        model="o1",  # Use your desired chat model
-        messages=[
-            {
-                "role": "system",
-                "content": (
-                    "You are a coding assistant specialized in generating Manim animations. Your output must be strictly raw, valid Python code "
-                    "that can be saved directly as a .py file and executed with Manim. Do not wrap the code in markdown fences or include any explanations. "
-                    "Only output the code, starting with all necessary import statements and defining exactly one Scene class named 'MyScene'. "
-                    "Ensure that all LaTeX expressions in MathTex objects are valid. " 
-                    "You are a coding assistant specialized in Manim Community v0.19.0. When generating or updating Manim code, replace any usage of `get_graph` with the newer `axes.plot` method. Ensure that all graph-plotting code uses `axes.plot` with appropriate keyword arguments (like `color`) so that no unexpected keyword errors occur. "
-                    "IMPORTANT: Ensure that all API calls and parameters (e.g., for get_graph, get_riemann_rectangles, etc.) strictly follow the Manim Community v0.19.0 documentation. Do not use any deprecated or invalid keyword arguments such as 'x_range' if they are not supported. Also do not use unsupported parameters like 'fill_color'; only use supported ones such as 'stroke_width' and 'fill_opacity'."
-                    "Use the following animation plan as the basis for the animation: "
-                    + animation_plan
-                )
-            },
-            {"role": "user", "content": "Generate the Manim code for the above animation plan."}
-        ]
-    )
+    model="o1",  # Use your desired chat model
+    messages=[
+        {
+            "role": "system",
+            "content": (
+                # ---------------------------------------------------------
+                # 1) Output Requirements
+                # ---------------------------------------------------------
+                "You are a coding assistant specialized in generating Manim animations. "
+                "Your output must be strictly raw, valid Python code (no markdown fences, no extra explanations). "
+                "Only output the code, starting with all necessary import statements and defining exactly one Scene class named 'MyScene'. "
+                "Ensure that all LaTeX expressions in MathTex objects are valid. "
+                "Animations must be slow enough to follow; do not create super fast animations. "
+                "Never let text or shapes overlap or go off-screen. "
+                "If you transform a plane, keep its original gridlines visible. "
+                "Use words to briefly explain at the top what the animation is showing. "
+
+                # ---------------------------------------------------------
+                # 2) Manim v0.19.0 Compliance
+                # ---------------------------------------------------------
+                "You must adhere to Manim Community v0.19.0. Always follow the official docs at https://docs.manim.community/en/stable/reference.html. "
+                "Avoid any deprecated or invalid parameters. Use only supported keyword arguments (e.g., 'color', 'stroke_width', 'fill_opacity'). "
+                "Do NOT use 'fill_color'. Do NOT use 'direction' in methods (use to_corner(UR) instead). "
+                "Do NOT reference 'self.camera.frame' in a default Scene. For camera animations, use 'MovingCameraScene' as the base class. "
+                "If you call 'move_camera', ensure the scene inherits from 'ThreeDScene', because 'move_camera' is unavailable in 'MovingCameraScene'. "
+                "Never set an animation's run_time to 0. If you need no pause, omit self.wait entirely. "
+                "Use 'move_camera' instead of 'set_camera_orientation'. "
+                "Do NOT call add_fixed_in_frame_mobjects if the scene inherits from MovingCameraScene; that method is only in ThreeDScene. "
+                "Do NOT use 'TransformMatchingParts'; use 'TransformMatchingShapes' instead. "
+
+                # ---------------------------------------------------------
+                # 3) Graph & Surface Methods
+                # ---------------------------------------------------------
+                "When plotting graphs, replace any 'get_graph' calls with 'axes.plot' and proper keyword arguments (e.g., color='BLUE'). "
+                "For specialized 3D classes like ParametricSurface, explicitly import them from their submodules. "
+                "Do NOT assume 'from manim import *' includes them. If they're missing, avoid using them. "
+                "Do NOT use 'x_range' or 'y_range' in VectorField, as it causes TypeError in v0.19.0. "
+
+                # ---------------------------------------------------------
+                # 4) Color Rules
+                # ---------------------------------------------------------
+                "Do NOT use color constants that don't exist in Manim v0.19.0: e.g., LIGHT_BLUE, DARK_GREEN, DARK_GRAY, DarkGreen, DarkGray, "
+                "LightBlue, LightGreen, DarkBlue, DarkBrown, LightCyan, LightMagenta, LightYellow, LightGrey, or DarkGrey. "
+                "Only use the built-in colors (WHITE, BLACK, GREY_A, ..., BROWN, BROWN_A, etc.), or define custom colors with Color(rgb=(r,g,b)). "
+                "Do NOT use 'dash_array' with 'set_style()'; use DashedVMobject or DashedLine for dashed lines. "
+                "Do NOT import 'Color' from 'manim.utils.color'. Manim v0.19.0 does not provide that class. Instead, use 'rgb_to_color((r,g,b))', a hex string, or a recognized built-in color constant. "
+
+                # ---------------------------------------------------------
+                # 5) Other Prohibitions
+                # ---------------------------------------------------------
+                "Do NOT use 'Pyramid'. If you need a pyramid, build it manually or use an existing shape in manim.mobject.three_d.polyhedra. "
+
+                # ---------------------------------------------------------
+                # 6) Final Instruction: Use the Provided Animation Plan
+                # ---------------------------------------------------------
+                "\n\nUse the following animation plan as the basis for the animation:\n"
+                + animation_plan
+            )
+        },
+        {"role": "user", "content": "Generate the Manim code for the above animation plan."}
+    ],
+    reasoning_effort="high"
+)
     code = response['choices'][0]['message']['content'].strip()
     
     # Strip out markdown fences if they're present
@@ -76,34 +125,90 @@ def generate_manim_code(animation_plan):
         code = "\n".join(lines)
     return code
 
-def main():
-    # Get a user prompt (explanation request) from the learner
-    user_prompt = "Help me understand how to do simple equations to solve for y."
+def determine_simple_name(animation_plan):
+    """
+    Uses a gpt-4o model to generate a short, unique, human-readable name
+    based on the animation plan. This ensures each animation file has a
+    concise and distinct title.
+    """
+    response = openai.ChatCompletion.create(
+        model="gpt-4o",  # or your chosen GPT-4 variant
+        messages=[
+            {
+                "role": "system",
+                "content": (
+                    "You are a naming assistant specialized in generating short, unique names for animations. "
+                    "The user will provide an animation plan, and you must return a concise, human-readable name. "
+                    "No punctuation besides underscores, letters, or digits. "
+                    "Only output the name, no explanations."
+                )
+            },
+            {"role": "user", "content": animation_plan}
+        ]
+    )
+    return response["choices"][0]["message"]["content"].strip()
 
-    # Step 1: Generate an animation plan and brief explanation based on the user prompt
+def main():
+    # Example user prompt
+    user_prompt = "Give me a simple and brief animation of an integral on a graph."
+
+    # Step 1: Generate an animation plan
     animation_plan = determine_animation_plan(user_prompt)
-    print("Generated Animation Plan and Brief Explanation:")
+    print("Generated Animation Plan:")
     print(animation_plan)
 
-    # Step 2: Generate the Manim code from the animation plan
+    # Step 2: Use the animation plan to get a short name from GPT-4o
+    short_name = determine_simple_name(animation_plan)
+    print(short_name)
+    # Sanitize the short name (remove spaces or special chars)
+    short_name_clean = re.sub(r'[^a-zA-Z0-9_]+', '_', short_name).strip('_')
+    print(short_name_clean)
+    if not short_name_clean:
+        short_name_clean = "Scene"
+
+    # Step 3: Generate Manim code
     manim_code = generate_manim_code(animation_plan)
+
+    # Ensure that there are no 0 wait times
+    manim_code = manim_code.replace("self.wait(0)", "self.wait(0.1)")
+
     print("\nGenerated Manim Code:")
     print(manim_code)
 
-    # Create a timestamp
+    # Step 4: Create a timestamp
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    # Modify the scene class name in the generated code to include the timestamp
-    new_scene_name = f"MyScene_{timestamp}"
-    # Replace the class definition from "MyScene" to our new scene name
-    modified_code = re.sub(r'class\s+MyScene\s*\(Scene\):', f'class {new_scene_name}(Scene):', manim_code)
 
-    # Save the modified code to a Python file with UTF-8 encoding
+    # Combine short name + timestamp
+    new_scene_name = f"{short_name_clean}_{timestamp}"
+
+    # Replace the class definition from "MyScene" to new scene name
+    modified_code = re.sub(
+        r'class\s+MyScene\s*\((.*?)\):',
+        rf'class {new_scene_name}(\1):',
+        manim_code
+    )
+
+    # Save the modified code
     filename = "generated_manim.py"
     with open(filename, "w", encoding="utf-8") as file:
         file.write(modified_code)
 
-    # Run Manim to compile the animation into an mp4 file using the new scene class name
-    subprocess.run(["manim", filename, new_scene_name, "--format=mp4"])
+    # Step 5: Run Manim to compile the animation, specifying an output MP4
+    mp4_filename = f"{new_scene_name}.mp4"
+    subprocess.run(["manim", filename, new_scene_name, "--format=mp4", "-o", mp4_filename])
+
+    # Step 6 (ADDED): Extract 1 frame per second with ffmpeg into <SceneName>/frames folder
+    frames_folder = os.path.join(new_scene_name, "frames")
+    os.makedirs(frames_folder, exist_ok=True)
+    subprocess.run([
+        "ffmpeg",
+        "-i", mp4_filename,
+        "-vf", "fps=1",
+        os.path.join(frames_folder, "frame_%03d.png")
+    ])
+
+    print(f"\nAnimation rendered to {mp4_filename}.")
+    print(f"Frames extracted to {frames_folder}.")
 
 if __name__ == "__main__":
     main()
