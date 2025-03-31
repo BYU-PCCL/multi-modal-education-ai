@@ -1,6 +1,8 @@
 import os
 import subprocess
-import openai
+from openai import OpenAI
+
+client = OpenAI(api_key=f.read().strip())
 from datetime import datetime
 import re
 
@@ -9,7 +11,6 @@ reasoning = "high"
 
 # Set your OpenAI API key (make sure it's set in your environment)
 with open("key.env") as f:
-    openai.api_key = f.read().strip()
 
 def determine_animation_plan(user_prompt):
     """
@@ -18,32 +19,30 @@ def determine_animation_plan(user_prompt):
       1. Animation Plan: a detailed plan for a brief (15-30 sec) animation.
       2. Brief Explanation: a very short summary of what the animation does.
     """
-    response = openai.ChatCompletion.create(
-        model="o3-mini",  # Use your desired chat model
-        messages=[
-            {
-                "role": "system",
-                "content": (
-                    "You will be given a normal prompt from a user that they would put into ChatGPT "
-                    "to help them understand a certain topic or problem. Your output will be given to another "
-                    "model that will actually create the Manim code for an animation to help the user. "
-                    "Your job is to determine what brief (5-30 second) animation should be created to best help the user understand the concept that they are asking about, "
-                    "and then explain that animation in a concise manner (a brief explanation). "
-                    "Tell the manim-generating model to include certain helpful equations and words that will more fully explain what is happening in the video. "
-                    "Also tell the model to ensure that it doesn't generate animations that will overlap or go off the screen. As you explain the duration of specific parts of the animation such as how long words and equations should stay on the screen, be specific as to how long they should be and ensure that there is no overlap of different parts of the animation. Also specify exactly where each aspect (equation, word, sentence, shape, etc.) should appear on the screen. "
-                    "Also make sure to tell the model to not make animations move too fast, make sure that you specifiy the length of them and that they are slow enough for people to follow and understand what is going on. "
-                    "Be very detailed and specific in how you explain the animation. Specify which colors to use to understand what is happening. For example, if a certain part of the equation is moving around, make it a seperate color. "
-                    "The objective of your described animation is to show something that can't be described easily with just an equation or words. You are to determine a visual animation that will help the learner visualize and comprehend the intuition of what is moving and the impact that it has. For example, with solving basic equations, show the numbers or variables moving around as you manipulate the equations instead of just having different equations appear. Another example is when describing what the determinat is, create an example of a shape on a plane being manipulated by a matrix that demonstrates what the determinat means. "
-                    "Tell the model to always include a very brief description of what the animation is showing. "
-                    "Output only plain text without any markdown formatting."
-                    ""
-                )
-            },
-            {"role": "user", "content": user_prompt}
-        ],
-        reasoning_effort = "low"
-    )
-    return response['choices'][0]['message']['content'].strip()
+    response = client.chat.completions.create(model="o3-mini",  # Use your desired chat model
+    messages=[
+        {
+            "role": "system",
+            "content": (
+                "You will be given a normal prompt from a user that they would put into ChatGPT "
+                "to help them understand a certain topic or problem. Your output will be given to another "
+                "model that will actually create the Manim code for an animation to help the user. "
+                "Your job is to determine what brief (5-30 second) animation should be created to best help the user understand the concept that they are asking about, "
+                "and then explain that animation in a concise manner (a brief explanation). "
+                "Tell the manim-generating model to include certain helpful equations and words that will more fully explain what is happening in the video. "
+                "Also tell the model to ensure that it doesn't generate animations that will overlap or go off the screen. As you explain the duration of specific parts of the animation such as how long words and equations should stay on the screen, be specific as to how long they should be and ensure that there is no overlap of different parts of the animation. Also specify exactly where each aspect (equation, word, sentence, shape, etc.) should appear on the screen. "
+                "Also make sure to tell the model to not make animations move too fast, make sure that you specifiy the length of them and that they are slow enough for people to follow and understand what is going on. "
+                "Be very detailed and specific in how you explain the animation. Specify which colors to use to understand what is happening. For example, if a certain part of the equation is moving around, make it a seperate color. "
+                "The objective of your described animation is to show something that can't be described easily with just an equation or words. You are to determine a visual animation that will help the learner visualize and comprehend the intuition of what is moving and the impact that it has. For example, with solving basic equations, show the numbers or variables moving around as you manipulate the equations instead of just having different equations appear. Another example is when describing what the determinat is, create an example of a shape on a plane being manipulated by a matrix that demonstrates what the determinat means. "
+                "Tell the model to always include a very brief description of what the animation is showing. "
+                "Output only plain text without any markdown formatting."
+                ""
+            )
+        },
+        {"role": "user", "content": user_prompt}
+    ],
+    reasoning_effort = "low")
+    return response.choices[0].message.content.strip()
 
 def generate_manim_code(animation_plan):
     """
@@ -52,8 +51,7 @@ def generate_manim_code(animation_plan):
     starting with the necessary import statements and defining exactly one Scene class named 'MyScene'.
     Ensure that all LaTeX expressions in MathTex commands use valid syntax.
     """
-    response = openai.ChatCompletion.create(
-    model="o3-mini",  # Use your desired chat model
+    response = client.chat.completions.create(model="o3-mini",  # Use your desired chat model
     messages=[
         {
             "role": "system",
@@ -69,7 +67,7 @@ def generate_manim_code(animation_plan):
                 "Never let text or shapes overlap or go off-screen. "
                 "If you transform a plane, keep its original gridlines visible. "
                 "Use words to briefly explain at the top what the animation is showing. "
-
+    
                 "Your code that you produce will be ran on Manim Community v0.18.0"
                 # ---------------------------------------------------------
                 # 2) Manim v0.19.0 Compliance
@@ -83,7 +81,7 @@ def generate_manim_code(animation_plan):
                 # "Use 'move_camera' instead of 'set_camera_orientation'. "
                 # "Do NOT call add_fixed_in_frame_mobjects if the scene inherits from MovingCameraScene; that method is only in ThreeDScene. "
                 # "Do NOT use 'TransformMatchingParts'; use 'TransformMatchingShapes' instead. "
-
+    
                 # ---------------------------------------------------------
                 # 3) Graph & Surface Methods
                 # ---------------------------------------------------------
@@ -91,7 +89,7 @@ def generate_manim_code(animation_plan):
                 # "For specialized 3D classes like ParametricSurface, explicitly import them from their submodules. "
                 # "Do NOT assume 'from manim import *' includes them. If they're missing, avoid using them. "
                 # "Do NOT use 'x_range' or 'y_range' in VectorField, as it causes TypeError in v0.19.0. "
-
+    
                 # ---------------------------------------------------------
                 # 4) Color Rules
                 # ---------------------------------------------------------
@@ -100,12 +98,12 @@ def generate_manim_code(animation_plan):
                 # "Only use the built-in colors (WHITE, BLACK, GREY_A, ..., BROWN, BROWN_A, etc.), or define custom colors with Color(rgb=(r,g,b)). "
                 # "Do NOT use 'dash_array' with 'set_style()'; use DashedVMobject or DashedLine for dashed lines. "
                 # "Do NOT import 'Color' from 'manim.utils.color'. Manim v0.19.0 does not provide that class. Instead, use 'rgb_to_color((r,g,b))', a hex string, or a recognized built-in color constant. "
-
+    
                 # ---------------------------------------------------------
                 # 5) Other Prohibitions
                 # ---------------------------------------------------------
                 # "Do NOT use 'Pyramid'. If you need a pyramid, build it manually or use an existing shape in manim.mobject.three_d.polyhedra. "
-
+    
                 # ---------------------------------------------------------
                 # 6) Final Instruction: Use the Provided Animation Plan
                 # ---------------------------------------------------------
@@ -115,11 +113,10 @@ def generate_manim_code(animation_plan):
         },
         {"role": "user", "content": "Generate the Manim code for the above animation plan."}
     ],
-    reasoning_effort="low"
-)
+    reasoning_effort="low")
 
-    code = response['choices'][0]['message']['content'].strip()
-    
+    code = response.choices[0].message.content.strip()
+
     # Strip out markdown fences if they're present
     if code.startswith("```"):
         lines = code.splitlines()
@@ -136,23 +133,21 @@ def determine_simple_name(animation_plan):
     based on the animation plan. This ensures each animation file has a
     concise and distinct title.
     """
-    response = openai.ChatCompletion.create(
-        model="gpt-4o",  # or your chosen GPT-4 variant
-        messages=[
-            {
-                "role": "system",
-                "content": (
-                    "You are a naming assistant specialized in generating short, unique names for animations. "
-                    "The user will provide an animation plan, and you must return a concise, human-readable name. "
-                    "No punctuation besides underscores, letters, or digits. "
-                    "Put a single, random digit at the end of each name to futher ensure uniqueness. "
-                    "Only output the name, no explanations."
-                )
-            },
-            {"role": "user", "content": animation_plan}
-        ]
-    )
-    return response["choices"][0]["message"]["content"].strip()
+    response = client.chat.completions.create(model="gpt-4o",  # or your chosen GPT-4 variant
+    messages=[
+        {
+            "role": "system",
+            "content": (
+                "You are a naming assistant specialized in generating short, unique names for animations. "
+                "The user will provide an animation plan, and you must return a concise, human-readable name. "
+                "No punctuation besides underscores, letters, or digits. "
+                "Put a single, random digit at the end of each name to futher ensure uniqueness. "
+                "Only output the name, no explanations."
+            )
+        },
+        {"role": "user", "content": animation_plan}
+    ])
+    return response.choices[0].message.content.strip()
 
 def main():
     # Example user prompt
