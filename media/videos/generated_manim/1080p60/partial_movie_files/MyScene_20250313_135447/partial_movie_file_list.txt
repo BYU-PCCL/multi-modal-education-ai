@@ -1,0 +1,13 @@
+# This file is used internally by FFMPEG.
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/MyScene_20250313_135447/3977891868_83693963_223132457.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/MyScene_20250313_135447/2852726489_4217992463_3732871202.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/MyScene_20250313_135447/2852726489_35433806_3814403574.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/MyScene_20250313_135447/2852726489_2844360058_1257678048.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/MyScene_20250313_135447/2852726489_2283464550_1301426313.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/MyScene_20250313_135447/2852726489_4217992463_2203041378.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/MyScene_20250313_135447/2852726489_950174359_3313613012.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/MyScene_20250313_135447/2852726489_3656096519_3856615044.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/MyScene_20250313_135447/2852726489_1954880623_1007841225.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/MyScene_20250313_135447/2852726489_2844360058_3858693966.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/MyScene_20250313_135447/2852726489_2962467407_611013349.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/MyScene_20250313_135447/2852726489_4217992463_78631282.mp4'

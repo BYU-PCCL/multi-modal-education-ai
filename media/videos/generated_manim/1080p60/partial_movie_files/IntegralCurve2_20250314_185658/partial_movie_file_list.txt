@@ -1,0 +1,13 @@
+# This file is used internally by FFMPEG.
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/IntegralCurve2_20250314_185658/3977891868_2817892870_223132457.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/IntegralCurve2_20250314_185658/2852726489_1055068161_4161409049.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/IntegralCurve2_20250314_185658/2852726489_3325480717_1525400573.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/IntegralCurve2_20250314_185658/2852726489_3803324667_4225607029.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/IntegralCurve2_20250314_185658/2852726489_203225733_839451987.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/IntegralCurve2_20250314_185658/2852726489_1040791999_2205440653.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/IntegralCurve2_20250314_185658/2852726489_3830692080_2220155989.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/IntegralCurve2_20250314_185658/2852726489_165055081_3303608318.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/IntegralCurve2_20250314_185658/2852726489_292526400_2260161792.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/IntegralCurve2_20250314_185658/2852726489_2342091102_2111285520.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/IntegralCurve2_20250314_185658/2852726489_467775868_4108938744.mp4'
+file 'file:C:/Users/dalli/OneDrive/Desktop/manim/media/videos/generated_manim/1080p60/partial_movie_files/IntegralCurve2_20250314_185658/2852726489_2521149236_2023860264.mp4'
